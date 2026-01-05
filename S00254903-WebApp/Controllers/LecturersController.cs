@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using S00254903_ClassLibrary;
 using S00254903_ConsoleApp;
+using Microsoft.AspNetCore.Authorization; //needed for part f which is to add roles and restrict lecturers controller to admin only
 
 namespace S00254903_WebApp.Controllers
 {
+    [Authorize(Roles = "Admin")] //needed for part f which is to add roles and restrict lecturers controller to admin only
     public class LecturersController : Controller
     {
         private readonly ConsoleStudentContext _context;
@@ -157,5 +159,29 @@ namespace S00254903_WebApp.Controllers
         {
             return _context.Lecturers.Any(e => e.ID == id);
         }
+
+        #region Q3 (d) Adding to the above a button beside each course which removes the lecturer from the course
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveLecturerFromCourse(int courseId, int lecturerId)
+        {
+            // Find the course
+            var course = await _context.Courses.FindAsync(courseId);
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            // Remove the lecturer by setting LecturerID to null (or 0, depending on your setup)
+            course.LecturerID = null; // Or set to null if your FK allows it
+
+            // Save changes
+            await _context.SaveChangesAsync();
+
+            // Redirect back to the lecturer's details page
+            return RedirectToAction(nameof(Details), new { id = lecturerId });
+        }
+        #endregion
     }
 }

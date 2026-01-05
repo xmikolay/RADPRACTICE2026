@@ -14,7 +14,7 @@ namespace S00254903_ClassLibrary
         public string Description { get; set; }
 
         //foreign key
-        public int LecturerID { get; set; }
+        public int? LecturerID { get; set; } //need the ? to make it nullable for deletion
 
         //navigation properties
         public Lecturer Lecturer { get; set; }
