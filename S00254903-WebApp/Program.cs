@@ -69,6 +69,29 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
+
+    #region Q3 (g) Make it so that when a student logs in they can only see their details and not the Students Index action.
+    // Create a test student user
+    var studentEmail = "jammyboi@yahoo.com"; // Match one of your seeded students
+    var studentUser = await userManager.FindByEmailAsync(studentEmail);
+
+    if (studentUser == null)
+    {
+        studentUser = new IdentityUser
+        {
+            UserName = studentEmail,
+            Email = studentEmail,
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(studentUser, "Student123!");
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(studentUser, "Student");
+        }
+    }
+    #endregion
 }
 #endregion
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,8 @@ namespace S00254903_WebApp.Controllers
         }
 
         // GET: Students
+        [Authorize(Roles = "Admin")] // Q3 (g) Make it so that when a student logs in they can only see their details and not the Students Index action.
+
         public async Task<IActionResult> Index()
         {
             return View(await _context.Students.ToListAsync());
@@ -47,6 +50,30 @@ namespace S00254903_WebApp.Controllers
 
             return View(student);
         }
+
+        #region Q3 (g) Make it so that when a student logs in they can only see their details and not the Students Index action.
+        // GET: Students/MyDetails
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> MyDetails()
+        {
+            // Get the logged-in user's email
+            var userEmail = User.Identity.Name;
+
+            // Find the student with matching email
+            var student = await _context.Students
+                .Include(s => s.Courses)
+                    .ThenInclude(c => c.Lecturer)
+                .FirstOrDefaultAsync(s => s.Email == userEmail);
+
+            if (student == null)
+            {
+                return NotFound("No student record found for your account.");
+            }
+
+            // Reuse the Details view
+            return View("Details", student);
+        }
+        #endregion
 
         // GET: Students/Create
         public IActionResult Create()
