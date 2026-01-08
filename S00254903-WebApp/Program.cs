@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 #region Q3 (a) In the MVC project create a CRUD scaffold for students.
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();  // ← ADD THIS LINE TO AVOID ERRORS WITH RAZOR PAGES, IDK
+builder.Services.AddRazorPages();  //ADD THIS LINE TO AVOID ERRORS WITH RAZOR PAGES, IDK
 
 // Configure your DbContext
 builder.Services.AddDbContext<ConsoleStudentContext>(options =>
